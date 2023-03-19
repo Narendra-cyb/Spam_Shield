@@ -1,23 +1,31 @@
 package com.example.spam_activity2;
+import static android.app.Service.START_STICKY;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.util.Log;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class SmsReceiver extends BroadcastReceiver {
     private static final String TAG = "SmsReceiver";
 
+    private SpamDetector spamDetector;
+    private MainActivity mainActivity;
+
+    private SmsService smsService;
+    private SmsReceiver smsReceiver;
     public SmsReceiver(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
     }
 
-    private SpamDetector spamDetector;
-    private MainActivity mainActivity;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -44,12 +52,16 @@ public class SmsReceiver extends BroadcastReceiver {
                     // Process each SMS message
                     for (Object pdu : pdus) {
                         SmsMessage smsMessage = SmsMessage.createFromPdu((byte[]) pdu);
-                        Log.v("message id",smsMessage.getMessageBody());
+                        String sender = smsMessage.getOriginatingAddress();
+                        String message = smsMessage.getMessageBody();
+                        long timestamp = smsMessage.getTimestampMillis();
+                        Log.v("message body",message);
+
                         // Classify the SMS message using the spam detector
                         boolean isSpam = spamDetector.classify(smsMessage.getMessageBody(), 0.5);
                         // Display the classification result as a toast message
-                        mainActivity.displayResult(smsMessage.getMessageBody(),isSpam);
-                        Toast.makeText(context, isSpam ? "SPAM" : "HAM", Toast.LENGTH_LONG).show();
+                        mainActivity.displayResult(message,sender,timestamp,isSpam);
+                        Toast.makeText(context, isSpam ? "SPAM" : "NOT SPAM", Toast.LENGTH_LONG).show();
                     }
                 }
             }
