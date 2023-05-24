@@ -1,6 +1,7 @@
 package com.example.spam_activity2;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,33 +48,83 @@ public class SMSFragment extends Fragment {
         adapter = new SMSAdapter(smsMessages);
 
         //when click on item
+        //when click on item
         adapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
-            public void onItemClick(SMSMessage message) {
+            public void onItemClick(final SMSMessage message) {
                 // Show a dialog and check if the message is spam
-                SpamDetector spamDetector = new SpamDetector();
-                try {
-                    // Train the spam detector with the training data
-                    Log.d("SMSFRAgment","Success ");
-                    spamDetector.train(context.getAssets().open("SMSSpamCollection.txt"), "spam");
-
-                } catch (IOException e) {
-                    Log.d("SMSFragment", "Error reading training data file", e);
-
-                    return;
-                }
-                Log.v("SMSFragment",message.getBody());
-                boolean isSpam = spamDetector.classify(message.getBody(),0.5);
-
-
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 builder.setTitle("Spam Check Result");
-
-                builder.setMessage("The message is " +" "+(isSpam ? "spam" : "not spam"));
+                builder.setMessage("Classifying message...");
                 builder.setPositiveButton("OK", null);
-                builder.show();
+                final AlertDialog dialog = builder.show();
+
+                // Create a new thread to perform the spam classification task
+                Thread thread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Train the spam detector with the training data
+                        SpamDetector spamDetector = new SpamDetector();
+                        SpamDetectorSingleton spamDetectorSingleton= SpamDetectorSingleton.getInstance();
+                        try {
+                            spamDetectorSingleton.train(context.getAssets().open("SMSSpamCollection.txt"), "spam");
+//                            spamDetector.train(context.getAssets().open("SMSSpamCollection.txt"), "spam");
+                        } catch (IOException e) {
+                            Log.d("SMSFragment", "Error reading training data file", e);
+                            return;
+                        }
+
+                        // Classify the message as spam or not spam
+                        final boolean isSpam = spamDetectorSingleton.classify(message.getBody(),0.5);
+
+                        // Update the UI with the result of the spam classification task
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                dialog.dismiss();
+                                Dialog dialog1 = new Dialog(getContext());
+                                dialog1.setContentView(R.layout.custom_dialog);
+                                TextView sender,msg,spam;
+                                sender = dialog1.findViewById(R.id.sendertxtvw);
+                                msg = dialog1.findViewById(R.id.msgtxtvw);
+                                spam = dialog1.findViewById(R.id.spamtxtvw);
+
+                                sender.setText(message.getSender());
+                                msg.setText(message.getBody());
+                                Boolean isspam = isSpam;
+                                if(isspam){
+                                    spam.setText("spam");
+                                    spam.setTextColor(Color.RED);
+                                }
+                                else{
+                                    spam.setText("not spam");
+                                    spam.setTextColor(Color.GREEN);
+                                };
+                                Button ok= dialog1.findViewById(R.id.ok);
+                                ok.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        dialog1.dismiss();
+                                    }
+                                });
+
+                                dialog1.show();
+
+//                                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+//                                builder.setTitle("Spam Check Result");
+//                                builder.setMessage("The message is " +" "+(isSpam ? "spam" : "not spam"));
+//                                builder.setPositiveButton("OK", null);
+//                                builder.show();
+                            }
+                        });
+                    }
+                });
+
+                // Start the thread
+                thread.start();
             }
         });
+
 
 
 

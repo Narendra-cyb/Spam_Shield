@@ -1,4 +1,6 @@
 package com.example.spam_activity2;
+import android.os.AsyncTask;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -64,4 +66,23 @@ public class SpamDetector {
         }
         return score;
     }
+    private class TrainTask extends AsyncTask<InputStream, Void, Void> {
+        @Override
+        protected Void doInBackground(InputStream... params) {
+            try {
+                SpamDetector spamDetector = new SpamDetector();
+                InputStream trainingDataPath = params[0];
+                spamDetector.train(trainingDataPath, "spam");
+            } catch (IOException e) {
+                // handle exception
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            // update UI if necessary
+        }
+    }
 }
+

@@ -3,28 +3,16 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
 
-    android:layout_height="200dp">
+    android:layout_height="210dp">
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/catigit"
+        android:src="@drawable/catigit2"
         android:scaleType="centerCrop"
         android:contentDescription="Header"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="10dp"
-        android:textAllCaps="true"
-        android:textColor="#170303"
-        android:textStyle="bold"
-        android:letterSpacing="0.09"
-        android:fontFamily="sans-serif-condensed-medium"
-        android:text="@string/spamshield"
-        android:textSize="24sp" />
+
 
 
 </RelativeLayout>

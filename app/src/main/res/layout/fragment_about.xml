@@ -1,17 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#2E0303"
-    tools:context=".aboutFragment">
+    android:background="@color/white"
+    android:padding="16dp">
 
-    <!-- TODO: Update blank fragment layout -->
     <ImageView
+        android:id="@+id/image_project_logo"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp"
+        android:scaleType="center"
+        android:src="@drawable/bluespamshield" />
+
+    <TextView
+        android:textColor="@color/black"
+        android:id="@+id/text_project_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/about"
-        android:layout_gravity="center"
-        />
+        android:layout_below="@id/image_project_logo"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
+        android:text="SpamShield"
+        android:textAllCaps="true"
+        android:textSize="24sp"
+        android:textStyle="bold" />
 
-</FrameLayout>
+    <TextView
+        android:textColor="@color/black"
+        android:id="@+id/text_project_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text_project_title"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp"
+        android:text="Detect Spam Messages and Warn"
+        android:textSize="18sp" />
+
+    <TextView
+        android:textColor="@color/black"
+        android:id="@+id/text_team_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text_project_description"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="8dp"
+        android:text="Team Members"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:textColor="@color/black"
+        android:id="@+id/text_team_members"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text_team_title"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="12dp"
+        android:text="Narendra Sahu"
+        android:textSize="16sp" />
+
+
+
+    <TextView
+        android:textColor="@color/black"
+        android:id="@+id/ashu_team_members"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text_team_members"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="12dp"
+        android:text="Ashutosh Jena"
+        android:textSize="16sp" />
+
+    <TextView
+        android:textColor="@color/black"
+        android:id="@+id/bulubhai_team_members"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ashu_team_members"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="12dp"
+        android:text="Bibhisan Mahanta"
+        android:textSize="16sp" />
+
+    <TextView
+        android:textColor="@color/black"
+        android:id="@+id/chira_team_members"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/bulubhai_team_members"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="12dp"
+        android:text="Chiraswati Mishra"
+        android:textSize="16sp" />
+
+    <TextView
+        android:textColor="@color/black"
+        android:id="@+id/sudeep_team_members"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/chira_team_members"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="12dp"
+        android:text="Sudeep Kumar Panigrahi"
+        android:textSize="16sp" />
+
+</RelativeLayout>

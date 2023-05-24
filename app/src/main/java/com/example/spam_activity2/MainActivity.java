@@ -2,29 +2,38 @@ package com.example.spam_activity2;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
+
+import androidx.core.app.NotificationCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
+
+import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.net.Uri;
+
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.view.Gravity;
+
+import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
+
 import android.widget.Button;
 import android.widget.TextView;
-import android.Manifest;
 import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
@@ -140,8 +149,25 @@ public class MainActivity extends AppCompatActivity {
             drawerLayout.closeDrawer(GravityCompat.START);
         } else {
 //            super.onBackPressed();
-            moveTaskToBack(true);
+//            moveTaskToBack(true);
+            AlertDialog.Builder exitdlg = new AlertDialog.Builder(this);
+            exitdlg.setTitle("Exit?");
+            exitdlg.setMessage("Are you sure want to exit?");
+            exitdlg.setIcon(R.drawable.baseline_exit_to_app_24);
 
+            exitdlg.setPositiveButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    Toast.makeText(MainActivity.this, "Welcome Back", Toast.LENGTH_SHORT).show();
+                }
+            });
+            exitdlg.setNegativeButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    MainActivity.super.onBackPressed();
+                }
+            });
+            exitdlg.show();
 
         }
     }
@@ -167,12 +193,48 @@ public class MainActivity extends AppCompatActivity {
 
     public void displayResult(String msg, String sender, long timestamp, boolean isSpam) {
         runOnUiThread(() -> {
+
+            Drawable drawable = ResourcesCompat.getDrawable(getResources(),R.drawable.alert,null);
+            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
+            Bitmap Imageicon = bitmapDrawable.getBitmap();
+            //notification manager implements
+            Notification notification;
+            NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+            Notification.BigTextStyle bigTextStyle = new Notification.BigTextStyle()
+                    .bigText(msg);
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                        notification = new Notification.Builder(this)
+                        .setLargeIcon(Imageicon)
+                        .setSmallIcon(R.drawable.email_svg)
+                                .setContentTitle(sender)
+                        .setContentText(msg)
+                        .setStyle(bigTextStyle)
+                        .setSubText("New message")
+                        .setChannelId("spammessage")
+                        .build();
+                        nm.createNotificationChannel(new NotificationChannel("spammessage","main",NotificationManager.IMPORTANCE_HIGH));
+            }
+            else{
+                notification = new Notification.Builder(this)
+                        .setLargeIcon(Imageicon)
+                        .setSmallIcon(R.drawable.email_svg)
+                        .setContentText("New Message")
+                        .setStyle(bigTextStyle)
+                        .setSubText(String.valueOf(isSpam))
+                        .build();
+            }
+            nm.notify(100,notification);
+
+
             sms_textview.setText(msg);
 
             senderTextView.setText(sender);
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String formattedDate = sdf.format(new Date(timestamp));
             timestampTV.setText(formattedDate);
+
             if (isSpam) {
                 resultTextView.setTextColor(Color.RED);
                 resultTextView.setText("SPAM");
@@ -180,6 +242,7 @@ public class MainActivity extends AppCompatActivity {
                 resultTextView.setTextColor(Color.GREEN);
                 resultTextView.setText("NOT SPAM");
             }
+
             //save last message
             saveLastMessage(msg, sender, timestamp, isSpam);
 

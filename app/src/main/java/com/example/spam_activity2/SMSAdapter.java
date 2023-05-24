@@ -17,7 +17,6 @@ public class SMSAdapter extends RecyclerView.Adapter<SMSAdapter.ViewHolder> {
     private OnItemClickListener listener;
     private List<SMSMessage> smsMessages;
 
-    private int lastPosition = -1;
     private int[] colors = new int[]{Color.parseColor("#E1F5FE"), Color.parseColor("#E0F7FA"), Color.parseColor("#E0F2F1"), Color.parseColor("#E8F5E9"), Color.parseColor("#F1F8E9"), Color.parseColor("#FFFDE7"), Color.parseColor("#FFF8E1"), Color.parseColor("#FFECB3"), Color.parseColor("#FFE0B2"), Color.parseColor("#FFCCBC")};
 
 

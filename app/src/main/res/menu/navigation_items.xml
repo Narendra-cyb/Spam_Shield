@@ -9,11 +9,11 @@
         android:title="SMS"
         android:icon="@drawable/email_svg" />
     <item
+        android:icon="@drawable/help_svg"
+        android:id="@+id/optHelp"
+        android:title="Spamlist" />
+    <item
         android:id="@+id/optAbout"
         android:icon="@drawable/about_svg"
         android:title="About" />
-    <item
-        android:icon="@drawable/help_svg"
-        android:id="@+id/optHelp"
-        android:title="Help" />
 </menu>

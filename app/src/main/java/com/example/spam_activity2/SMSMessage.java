@@ -7,6 +7,7 @@ public class SMSMessage {
     private String sender;
     private String body;
     private String timestamp;
+    private boolean isExpanded;
 
     public SMSMessage() {
     }
@@ -16,6 +17,7 @@ public class SMSMessage {
         this.sender = sender;
         this.body = body;
         this.timestamp = timestamp;
+        this.isExpanded=false;
     }
 
     public String getId() {
@@ -32,5 +34,12 @@ public class SMSMessage {
 
     public String getTimestamp() {
         return timestamp;
+    }
+    public boolean isExpanded() {
+        return isExpanded;
+    }
+
+    public void setExpanded(boolean expanded) {
+        isExpanded = expanded;
     }
 }

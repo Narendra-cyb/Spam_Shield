@@ -1,27 +1,22 @@
 package com.example.spam_activity2;
-import static android.app.Service.START_STICKY;
+
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.util.Log;
 import android.widget.Toast;
-
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+
 
 public class SmsReceiver extends BroadcastReceiver {
     private static final String TAG = "SmsReceiver";
 
-    private SpamDetector spamDetector;
     private MainActivity mainActivity;
 
-    private SmsService smsService;
-    private SmsReceiver smsReceiver;
+;
     public SmsReceiver(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
     }
@@ -30,11 +25,12 @@ public class SmsReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         // Initialize the spam detector
-        spamDetector = new SpamDetector();
+        SpamDetectorSingleton spamDetectorSingleton = SpamDetectorSingleton.getInstance();
 
         try {
             // Train the spam detector with the training data
-            spamDetector.train(context.getAssets().open("SMSSpamCollection.txt"), "spam");
+            spamDetectorSingleton.train(context.getAssets().open("SMSSpamCollection.txt"), "spam");
+//            spamDetector.train(context.getAssets().open("SMSSpamCollection.txt"), "spam");
             Log.d(TAG, "Spam detector trained successfully.");
         } catch (IOException e) {
             Log.e(TAG, "Error reading training data file", e);
@@ -58,7 +54,7 @@ public class SmsReceiver extends BroadcastReceiver {
                         Log.v("message body",message);
 
                         // Classify the SMS message using the spam detector
-                        boolean isSpam = spamDetector.classify(smsMessage.getMessageBody(), 0.5);
+                        boolean isSpam = spamDetectorSingleton.classify(smsMessage.getMessageBody(), 0.5);
                         // Display the classification result as a toast message
                         mainActivity.displayResult(message,sender,timestamp,isSpam);
                         Toast.makeText(context, isSpam ? "SPAM" : "NOT SPAM", Toast.LENGTH_LONG).show();
